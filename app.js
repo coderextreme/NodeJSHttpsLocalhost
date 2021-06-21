@@ -1,4 +1,5 @@
 var express = require('express');
+var favicon = require('serve-favicon')
 var cors = require('cors');
 var fs = require('fs');
 var https = require('https');
@@ -7,7 +8,8 @@ var port = process.env.PORT || 3000;
 var path = require('path');
 
 
-app.use(express.static('/'));
+app.use(express.static(__dirname));
+app.use(favicon(path.join(__dirname, 'favicon.ico')))
 
 function send(res, data, type, next) {
 	sendNoNext(res, data, type);

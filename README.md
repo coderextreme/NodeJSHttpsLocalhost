@@ -4,6 +4,8 @@ A Node.JS https server @ localhost
 Usage:
 
 ```
+git clone https://github.com/coderextreme/NodeJSHttpsLocalhost
+cd NodeJSHttpsLocalhost
 npm install
 npm run start
 ```

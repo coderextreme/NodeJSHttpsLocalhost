@@ -1,0 +1,13 @@
+{
+  "name": "NodeJSHttpsLocalhost",
+  "version": "0.0.1",
+  "private": true,
+  "main": "app.js",
+  "dependencies": {
+    "cors": "*",
+    "express": "*"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}

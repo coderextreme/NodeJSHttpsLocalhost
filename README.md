@@ -12,6 +12,6 @@ npm run start
 ```
 go to https://localhost:3000/index.html in your web browser
 
-The X3dom example doesn't work yet completely yet.  Fonts are commented out.  Help is welcome on finding font resources.
+The X3dom example doesn't work completely yet.  Fonts are commented out.  Help is welcome on finding font resources.
 
 When setting up keys, be sure to use localhost for Common Name.

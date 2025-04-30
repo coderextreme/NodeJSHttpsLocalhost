@@ -1,12 +1,12 @@
 {
   "name": "NodeJSHttpsLocalhost",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "main": "app.js",
   "dependencies": {
     "cors": "*",
-    "express": "*",
-    "serve-favicon": "^2.5.0"
+    "express": "^4.21.2",
+    "serve-favicon": "*"
   },
   "scripts": {
     "start": "node app.js"

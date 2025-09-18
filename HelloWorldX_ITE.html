@@ -6,12 +6,12 @@
       <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
       <meta name="generator"
             content="http://www.web3d.org/x3d/stylesheets/X3dToX3dom.xslt"/>
-      <!-- X_ITE developer site: https://code.create3000.de/x_ite -->
-      <link rel="stylesheet"
-            type="text/css"
-            href="https://code.create3000.de/x_ite/latest/dist/x_ite.css"/>
-      <script type="text/javascript" src="https://code.create3000.de/x_ite/latest/dist/x_ite.min.js"></script>
+      <script type="module">
+	import X3D from "https://cdn.jsdelivr.net/npm/x_ite@12.0.8/dist/x_ite.min.mjs";
+      </script>
+      <!--
 <script type="text/javascript" src="https://code.create3000.de/x_ite/latest/dist/rigid-body-physics.min.js"></script>
+-->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <style type="text/css">
          @import url(https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700,700italic);
@@ -58,7 +58,7 @@
          .browser {
          box-shadow: 0px 2px 12px 1px rgba(0, 0, 0, 0.95);
          }
-         X3DCanvas {
+         x3d-canvas {
          /* Format 16:9 */
          width: 100%;
          height: 432px;
@@ -98,7 +98,7 @@
              jQuery (".maximize") .attr ("title", "Reduce frame, show console");
          
              jQuery (".browser") .css ("height", "100%");
-             jQuery ("X3DCanvas") .css ("height", "90%");
+             jQuery ("x3d-canvas") .css ("height", "90%");
            }
            else
            {
@@ -109,7 +109,7 @@
              jQuery (".maximize") .attr ("title", "Full Frame");
          
              jQuery (".browser") .css ("height", "initial");
-             jQuery ("X3DCanvas") .css ("height", "432px");
+             jQuery ("x3d-canvas") .css ("height", "432px");
            }
          }
 </script>
@@ -136,11 +136,11 @@
                      </td>
                   </tr>
                </table>
-<X3DCanvas url='"HelloWorld.x3d"'>
+<x3d-canvas url='"HelloWorld.x3d"'>
 	<p><b>Display error: X3D model not shown.</b></p>
 	<p>Your HTML browser does not appear to support all features required by the
 	<a href="{$urlWebsiteX_ITE}" target="_blank">X_ITE</a> X3D player!</p>
-</X3DCanvas>
+</x3d-canvas>
 <div class="references">Original X3D scene: <a href="HelloWorld.x3d" target="" title="HelloWorld.x3d">HelloWorld.x3d</a>
                </div>
             </div>

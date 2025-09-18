@@ -1,93 +1,98 @@
-var express = require('express');
-var favicon = require('serve-favicon')
-var cors = require('cors');
-var fs = require('fs');
-var https = require('https');
-var app = express();
-var port = process.env.PORT || 3000;
-var path = require('path');
+// --- START OF FILE app.js (or app.mjs) ---
 
+import express from 'express';
+import favicon from 'serve-favicon';
+import cors from 'cors';
+import fs from 'fs';
+import https from 'https';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+// Recreate __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Serve static files from the current directory first.
 app.use(express.static(__dirname));
-app.use(favicon(path.join(__dirname, 'favicon.ico')))
+app.use(favicon(path.join(__dirname, 'favicon.ico')));
 
-function send(res, data, type, next) {
-	sendNoNext(res, data, type);
-	next();
-}
+/**
+ * Creates a route handler for a given file extension and MIME type.
+ * @param {string} extension - The file extension (e.g., "gif", "js").
+ * @param {string} mimeType - The MIME type (e.g., "image/gif").
+ */
+function createFileHandler(extension, mimeType) {
+    // Use a regular expression to match any path ending with the given extension.
+    const routePattern = new RegExp(`.*\\.${extension}$`);
 
-function sendNoNext(res, data, type) {
-	// console.error("Type", type);
-	try {
-		if (!type.startsWith("image/")) {
-			res.header("Content-Type", type);
-		}
-	} catch (e) {
-		console.error(e);
-	}
-	res.send(data);
-}
+    app.get(routePattern, cors(), (req, res, next) => {
+        let filePath = req.path;
 
-function magic(path, type) {
-    app.get(path, cors(), function(req, res, next) {
-	var url = req._parsedUrl.pathname;
-	try {
-		while (url.startsWith("/")) {
-			url = url.substr(1);
-		}
-		if (fs.existsSync(url)) {
-			var data = fs.readFileSync(url);
-			if (type.startsWith("image") || type.startsWith("audio") || type.startsWith("video")) {
-				sendNoNext(res, data, type);
-			} else {
-				sendNoNext(res, data.toString(), type);
-			}
-		}
-	} catch (e) {
-		console.error(e);
-		next();
-	}
+        if (filePath.startsWith('/')) {
+            filePath = filePath.substring(1);
+        }
+
+        try {
+            if (fs.existsSync(filePath)) {
+                const data = fs.readFileSync(filePath);
+                res.type(mimeType).send(data);
+            } else {
+                next();
+            }
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
     });
 }
 
-magic("*.gif", "image/gif");
-magic("*.ico", "image/x-icon");
-magic("*.jpg", "image/jpeg");
-magic("*.JPG", "image/jpeg");
-magic("*.jpeg", "image/jpeg");
-magic("*.png", "image/png");
-magic("*.mpg", "video/mpeg");
-magic("*.mp4", "video/mp4");
-magic("*.ogv", "video/ogg");
-magic("*.wav", "audio/wav");
-magic("*.mp3", "audio/mpeg3");
-magic("*.ply", "application/octet-stream");
-magic("*.stl", "application/octet-stream");
-magic("*.vs", "text/plain");//"x-shader/x-vertex");
-magic("*.fs", "text/plain");//"x-shader/x-fragment");
-magic("*.js", "text/javascript");
-magic("*.mjs", "text/javascript");
-magic("*.csv", "text/csv");
-magic("*.xhtml", "application/xhtml+xml");
-magic("*.html", "text/html");
-magic("*.xslt", "text/xsl");
-magic("*.css", "text/css");
-magic("*.swf", "application/x-shockwave-flash");
-magic("*.json", "text/json");
-magic("*.x3d", "model/x3d+xml");
-magic("*.x3d#*", "model/x3d+xml");
-magic("*.x3d", "model/x3d+xml");
-magic("*.wrl", "model/vrml");
-magic("*.gltf", "text/json");
-magic("*.glb", "application/octet-stream");
-magic("*.xml", "text/xml");
-magic("*.ttf", "font/ttf");
+// Register all the file handlers
+createFileHandler("gif", "image/gif");
+createFileHandler("ico", "image/x-icon");
+createFileHandler("jpg", "image/jpeg");
+createFileHandler("JPG", "image/jpeg");
+createFileHandler("jpeg", "image/jpeg");
+createFileHandler("png", "image/png");
+createFileHandler("mpg", "video/mpeg");
+createFileHandler("mp4", "video/mp4");
+createFileHandler("ogv", "video/ogg");
+createFileHandler("wav", "audio/wav");
+createFileHandler("mp3", "audio/mpeg3");
+createFileHandler("ply", "application/octet-stream");
+createFileHandler("stl", "application/octet-stream");
+createFileHandler("vs", "text/plain");
+createFileHandler("fs", "text/plain");
+createFileHandler("js", "text/javascript");
+createFileHandler("mjs", "text/javascript");
+createFileHandler("csv", "text/csv");
+createFileHandler("xhtml", "application/xhtml+xml");
+createFileHandler("html", "text/html");
+createFileHandler("xslt", "text/xsl");
+createFileHandler("css", "text/css");
+createFileHandler("swf", "application/x-shockwave-flash");
+createFileHandler("json", "text/json");
+createFileHandler("x3d", "model/x3d+xml");
+createFileHandler("wrl", "model/vrml");
+createFileHandler("gltf", "text/json");
+createFileHandler("glb", "application/octet-stream");
+createFileHandler("xml", "text/xml");
+createFileHandler("ttf", "font/ttf");
 
-https.createServer({
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.cert')
-}, app)
-.listen(3000, 'localhost', function () {
-  console.log('Example app listening on port 3000! Go to https://localhost:3000/index.html')
-})
+// HTTPS Server Setup
+try {
+    const options = {
+        key: fs.readFileSync('server.key'),
+        cert: fs.readFileSync('server.cert')
+    };
 
+    https.createServer(options, app)
+        .listen(port, () => {
+            console.log(`Example app listening on port ${port}! Go to https://localhost:${port}/index.html`);
+        });
+} catch (e) {
+    console.error("Could not start HTTPS server. Do you have 'server.key' and 'server.cert' in the root directory?");
+    console.error(e.message);
+}

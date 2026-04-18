@@ -90,7 +90,7 @@ try {
 
     https.createServer(options, app)
         .listen(port, () => {
-            console.log(`Example app listening on port ${port}! Go to https://localhost:${port}/index.html`);
+            console.log(`Example app listening on port ${port}! Go to https://127.0.0.1:${port}/index.html`);
         });
 } catch (e) {
     console.error("Could not start HTTPS server. Do you have 'server.key' and 'server.cert' in the root directory?");
